@@ -1,0 +1,224 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Plataforma Telemetría</title>
+    <!-- Importamos Tailwind vía CDN para desarrollo rápido -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#0d6efd', // Azul como en tu referencia (derecha)
+                            dark: '#0a58ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Fuente Inter (común en estos diseños) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-white">
+
+    <div class="flex min-h-screen">
+        
+        <!-- SECCIÓN IZQUIERDA: FORMULARIO -->
+        <div class="w-full lg:w-1/2 flex flex-col justify-center items-center px-8 bg-white pb-24 relative">
+            
+            <!-- Logo en la esquina superior izquierda -->
+            <div class="absolute top-8 left-8">
+                <a href="#" class="inline-block">
+                    <img src="{% static 'img/logo.png' %}" alt="Logo Telemetría" class="h-20 w-auto">
+                </a>
+            </div>
+
+            <!-- CONTENEDOR CENTRADO (El truco está aquí) -->
+            <!-- max-w-md: Limita el ancho para que parezca una tarjeta/bloque -->
+            <!-- w-full: Ocupa el espacio disponible hasta el máximo -->
+            <div class="w-full max-w-md">
+                
+                <!-- Encabezado -->
+                <div class="mb-8 text-center lg:text-left pt-16">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Iniciar Sesión</h2>
+                    <p class="text-gray-500 text-sm">¡Bienvenido de nuevo!</p>
+                </div>
+
+                <!-- FORMULARIO DJANGO -->
+                <form method="POST" class="space-y-5">
+                    {% csrf_token %}
+                    
+                    <!-- Manejo de Errores -->
+                    {% if form.non_field_errors %}
+                    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Input Email -->
+                    <div>
+                        <label for="id_username" class="block mb-2 text-sm font-medium text-gray-900">Usuario</label>
+                        <input type="text" name="username" id="id_username" 
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-2.5 placeholder-gray-400" 
+                            placeholder="usuario@1235" required>
+                    </div>
+
+                    <!-- Input Password -->
+                    <div class="relative">
+                        <label for="id_password" class="block mb-2 text-sm font-medium text-gray-900">Contraseña</label>
+                        <input type="password" name="password" id="id_password" 
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-2.5 placeholder-gray-400" 
+                            placeholder="•••••••••••" required>
+                        <!-- Icono Ojo -->
+                        <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 flex items-center pr-3 mt-7 text-gray-500 hover:text-gray-700">
+                            <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- Recordar / Olvidaste -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="remember" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-brand-dark">
+                            </div>
+                            <label for="remember" class="ms-2 text-sm font-medium text-gray-900">Recordar cuenta</label>
+                        </div>
+                        <a href="#" class="text-sm font-medium text-brand hover:underline">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <!-- Botón -->
+                    <button type="submit" class="w-full text-white bg-brand hover:bg-brand-dark focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-md transition-colors">
+                        Ingresar
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DERECHA: IMAGEN/BRANDING -->
+        <!-- "hidden lg:flex" oculta esto en móviles y lo muestra en pantallas grandes -->
+        <div class="hidden lg:flex lg:w-1/2 bg-brand items-center justify-center relative overflow-hidden">
+            
+            <!-- Decoración de fondo (Círculos) - Se mantienen fijos -->
+            <div class="absolute w-[600px] h-[600px] bg-white/10 rounded-full blur-3xl -top-20 -right-20 z-0"></div>
+            <div class="absolute w-[400px] h-[400px] bg-blue-500/30 rounded-full blur-2xl bottom-10 left-10 z-0"></div>
+
+            <!-- CONTENEDOR DE SLIDES -->
+            <div id="carousel-slides" class="relative z-10 w-full max-w-lg text-center px-10 h-[500px] flex items-center justify-center">
+                
+                <!-- SLIDE 1: Monitoreo -->
+                <div class="carousel-item absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100 flex flex-col items-center justify-center" data-index="0">
+                    <!-- Imagen / Ilustración -->
+                    <div class="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/20 shadow-2xl mb-8 transform hover:scale-105 transition duration-500">
+                        <img src="https://img.freepik.com/free-vector/data-extraction-concept-illustration_114360-4876.jpg?w=740&t=st=1701625000~exp=1701625600~hmac=..." 
+                            alt="Monitoring" class="w-64 h-48 object-cover rounded-lg opacity-90 mix-blend-overlay"> 
+                        <!-- Nota: Puse mix-blend-overlay para que se fusione con el azul, quítalo si usas tus propias fotos -->
+                    </div>
+                    <h2 class="text-3xl font-bold text-white mb-4">Monitoreo en Tiempo Real</h2>
+                    <p class="text-blue-100 text-lg">Visualiza el estado de tus sensores y variables críticas al instante, desde cualquier lugar.</p>
+                </div>
+
+                <!-- SLIDE 2: Análisis -->
+                <div class="carousel-item absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0 flex flex-col items-center justify-center" data-index="1">
+                    <div class="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/20 shadow-2xl mb-8 transform hover:scale-105 transition duration-500">
+                        <!-- Placeholder de gráfica -->
+                        <div class="w-64 h-48 bg-white rounded-lg flex items-center justify-center">
+                            <svg class="w-20 h-20 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white mb-4">Análisis Histórico</h2>
+                    <p class="text-blue-100 text-lg">Accede a registros detallados y exporta reportes para la toma de decisiones basada en datos.</p>
+                </div>
+
+                <!-- SLIDE 3: Alertas -->
+                <div class="carousel-item absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0 flex flex-col items-center justify-center" data-index="2">
+                    <div class="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/20 shadow-2xl mb-8 transform hover:scale-105 transition duration-500">
+                        <!-- Placeholder de alerta -->
+                        <div class="w-64 h-48 bg-white rounded-lg flex items-center justify-center">
+                            <svg class="w-20 h-20 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white mb-4">Alertas Tempranas</h2>
+                    <p class="text-blue-100 text-lg">Recibe notificaciones inmediatas cuando los parámetros salgan de los rangos establecidos.</p>
+                </div>
+
+            </div>
+
+            <!-- INDICADORES (PUNTOS) -->
+            <div class="absolute bottom-10 flex gap-3 z-20">
+                <button class="carousel-dot w-3 h-3 rounded-full bg-white transition-all duration-300" onclick="goToSlide(0)"></button>
+                <button class="carousel-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/70 transition-all duration-300" onclick="goToSlide(1)"></button>
+                <button class="carousel-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/70 transition-all duration-300" onclick="goToSlide(2)"></button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Script para ver contraseña -->
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('id_password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+        }
+
+        const slides = document.querySelectorAll('.carousel-item');
+        const dots = document.querySelectorAll('.carousel-dot');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+        const intervalTime = 2000; // Cambia cada 3 segundos
+
+        function showSlide(index) {
+            // Resetear todos los slides
+            slides.forEach((slide) => {
+                slide.classList.remove('opacity-100', 'z-10');
+                slide.classList.add('opacity-0', 'z-0');
+            });
+            
+            // Resetear puntos
+            dots.forEach((dot) => {
+                dot.classList.remove('bg-white', 'scale-110');
+                dot.classList.add('bg-white/40');
+            });
+
+            // Activar el slide actual
+            slides[index].classList.remove('opacity-0', 'z-0');
+            slides[index].classList.add('opacity-100', 'z-10');
+
+            // Activar el punto actual
+            dots[index].classList.remove('bg-white/40');
+            dots[index].classList.add('bg-white', 'scale-110');
+            
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            let nextIndex = (currentSlide + 1) % totalSlides;
+            showSlide(nextIndex);
+        }
+
+        // Función para los clicks en los puntos
+        function goToSlide(index) {
+            showSlide(index);
+            // Reiniciamos el timer para que no cambie inmediatamente después del click
+            clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, intervalTime);
+        }
+
+        // Iniciar el carrusel automático
+        let slideInterval = setInterval(nextSlide, intervalTime);
+
+        // Inicializar
+        showSlide(0);
+    </script>
+</body>
+</html>

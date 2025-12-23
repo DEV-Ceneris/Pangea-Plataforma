@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Nueva Estación{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="mb-6 border-b pb-4">
+            <h1 class="text-xl font-bold text-gray-900">Registrar Nueva Estación</h1>
+            <p class="text-sm text-gray-500">Vincula un Datalogger físico a un proyecto.</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="space-y-5">
+                <!-- Datos Principales -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la Estación</label>
+                        {{ form.nombre }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Proyecto Asignado</label>
+                        {{ form.proyecto }}
+                    </div>
+                </div>
+
+                <!-- Código Vital -->
+                <div class="bg-blue-50 p-4 rounded-md border border-blue-100">
+                    <label class="block text-sm font-bold text-blue-800 mb-1">Código Identificador (Datalogger ID)</label>
+                    {{ form.codigo_identificador }}
+                    <p class="text-xs text-blue-600 mt-1">
+                        ⚠️ Debe coincidir exactamente con el número en el nombre del archivo .dat (Ej: FAO_<b>21738</b>.dat)
+                    </p>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Latitud</label>
+                        {{ form.latitud }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Longitud</label>
+                        {{ form.longitud }}
+                    </div>
+                </div>
+
+                <!-- Alertas -->
+                <div class="border-t pt-4">
+                    <h3 class="text-sm font-medium text-gray-900 mb-3">Configuración de Alertas</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Límite Mínimo Oxígeno</label>
+                            {{ form.limite_oxigeno_min }}
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">Límite Mínimo Batería</label>
+                            {{ form.limite_bateria_min }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end gap-3">
+                <a href="{% url 'lista_estaciones' %}" class="px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 text-sm font-medium">Cancelar</a>
+                <button type="submit" class="px-4 py-2 bg-brand text-white rounded-md hover:bg-blue-700 text-sm font-medium shadow-sm">Guardar Estación</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

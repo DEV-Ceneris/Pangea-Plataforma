@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ proyecto.nombre }} | Estaciones{% endblock %}
+
+{% block content %}
+<!-- Cabecera del Proyecto -->
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+    <div class="flex justify-between items-start">
+        <div>
+            <div class="flex items-center gap-3">
+                <a href="{% url 'lista_proyectos' %}" class="text-gray-400 hover:text-brand">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </a>
+                <h1 class="text-2xl font-bold text-gray-900">{{ proyecto.nombre }}</h1>
+            </div>
+            <p class="text-gray-600 mt-2 ml-9">{{ proyecto.descripcion }}</p>
+        </div>
+        <div class="text-right">
+            <span class="block text-sm text-gray-500">ID Proyecto: #{{ proyecto.id }}</span>
+            <span class="block text-sm text-gray-500">Inicio: {{ proyecto.fecha_inicio }}</span>
+        </div>
+    </div>
+</div>
+
+<!-- Lista de Estaciones -->
+<h2 class="text-lg font-bold text-gray-800 mb-4 px-1">Estaciones de Monitoreo</h2>
+
+{% if estaciones %}
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {% for e in estaciones %}
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-5 hover:border-brand transition-colors group relative">
+            <div class="flex justify-between items-start mb-2">
+                <h3 class="text-lg font-bold text-gray-900">{{ e.nombre }}</h3>
+                <!-- Indicador de estado (simulado verde) -->
+                <span class="h-3 w-3 rounded-full bg-green-500 shadow-sm animate-pulse"></span>
+            </div>
+            <p class="text-sm text-gray-500 mb-4">Código Datalogger: <span class="font-mono bg-gray-100 px-1 rounded">{{ e.codigo_identificador }}</span></p>
+            
+            <div class="flex gap-2 mt-4">
+                <!-- Este botón llevaría al Dashboard filtrado por esta estación (Futuro) -->
+                <a href="#" class="flex-1 text-center bg-brand text-white text-sm py-2 rounded hover:bg-blue-700 transition">
+                    Ver Gráficas
+                </a>
+                <a href="#" class="px-3 py-2 border border-gray-200 rounded text-gray-600 hover:bg-gray-50" title="Ver en Mapa">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-yellow-700">
+                    Este proyecto aún no tiene estaciones vinculadas.
+                </p>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

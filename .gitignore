@@ -1,0 +1,19 @@
+# Python y Django
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entorno Virtual (¡Muy importante no subir esto!)
+venv/
+env/
+.env
+
+# Base de datos local (Opcional, generalmente no se sube)
+db.sqlite3
+
+# Archivos de medios (imágenes subidas por usuarios)
+media/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db

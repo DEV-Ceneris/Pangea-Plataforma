@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Pangea Telemetría{% endblock %}</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuración de Colores (Coherente con tu Login) -->
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                brand: {
+                  DEFAULT: '#0d6efd', // Azul Pangea
+                  50: '#eff6ff',
+                  100: '#dbeafe',
+                  600: '#2563eb',
+                  700: '#1d4ed8',
+                  800: '#1e40af',
+                }
+              }
+            }
+          }
+        }
+    </script>
+    
+    <!-- Alpine.js (Opcional, pero recomendado para desplegar menú móvil sin escribir JS complejo) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Bloque para CSS específico de cada página (ej: Highcharts CSS) -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen font-sans text-gray-900">
+
+    <!-- NAVBAR -->
+    <nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50" x-data="{ open: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                
+                <!-- LADO IZQUIERDO: LOGO Y MENÚ -->
+                <div class="flex">
+                    <!-- Logo -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/">
+                            <!-- Asegúrate de tener tu logo en esta ruta -->
+                            <img src="{% static 'img/logo.png' %}" 
+                                 alt="Pangea Logo" 
+                                 class="h-10 w-auto object-contain">
+                        </a>
+                    </div>
+                    
+                    <!-- Enlaces de navegación (Escritorio) -->
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <!-- Enlace Activo (tiene borde abajo) -->
+                        <a href="{% url 'dashboard' %}" 
+                           class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-150
+                           {% if request.resolver_match.url_name == 'dashboard' %}
+                               border-brand text-gray-900
+                           {% else %}
+                               border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700
+                           {% endif %}">
+                            Dashboard
+                        </a>
+                        
+                        <!-- Enlaces Secundarios (sin borde, color gris) -->
+                        <a href="{% url 'lista_proyectos' %}" 
+                           class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-150
+                           {% if 'proyectos' in request.path %}
+                               border-brand text-gray-900
+                           {% else %}
+                               border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700
+                           {% endif %}">
+                            Proyectos
+                        </a>
+                        <a href="{% url 'lista_estaciones' %}" 
+                           class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-150
+                           {% if 'estaciones' in request.path %}
+                               border-brand text-gray-900
+                           {% else %}
+                               border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700
+                           {% endif %}">
+                            Estaciones
+                        </a>
+                        <a href="#" 
+                           class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-150
+                           {% if 'mapa' in request.path %}
+                               border-brand text-gray-900
+                           {% else %}
+                               border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700
+                           {% endif %}">
+                            Mapa Global
+                        </a>
+                    </div>
+                </div>
+
+                <!-- LADO DERECHO: PERFIL Y LOGOUT -->
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    {% if user.is_authenticated %}
+                        <div class="mr-4 text-right hidden md:block">
+                            <p class="text-sm font-medium text-gray-900">{{ user.username|title }}</p>
+                            <p class="text-xs text-gray-500">
+                                {% if user.is_superuser %}
+                                    Administrador
+                                {% else %}
+                                    Operador
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                        <!-- Avatar / Icono Usuario -->
+                        <div class="h-8 w-8 rounded-full bg-brand/10 flex items-center justify-center text-brand font-bold mr-3">
+                            {{ user.username|make_list|first|upper }}
+                        </div>
+
+                        <!-- Botón Cerrar Sesión -->
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-full hover:bg-red-50 focus:outline-none" title="Cerrar Sesión">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                                </svg>
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-brand font-medium hover:text-blue-700">Iniciar Sesión</a>
+                    {% endif %}
+                </div>
+
+                <!-- BOTÓN MENÚ MÓVIL (Hamburguesa) -->
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button @click="open = !open" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-brand">
+                        <span class="sr-only">Abrir menú</span>
+                        <!-- Icono menú -->
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MENÚ MÓVIL (Desplegable) -->
+        <div class="sm:hidden" x-show="open" @click.away="open = false" style="display: none;">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="/" class="bg-brand/10 border-brand text-brand block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Dashboard</a>
+                <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Proyectos</a>
+                <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Estaciones</a>
+            </div>
+            <!-- Perfil Móvil -->
+            <div class="pt-4 pb-4 border-t border-gray-200">
+                <div class="flex items-center px-4">
+                    <div class="flex-shrink-0">
+                        <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                            {{ user.username|make_list|first|upper }}
+                        </div>
+                    </div>
+                    <div class="ml-3">
+                        <div class="text-base font-medium text-gray-800">{{ user.username }}</div>
+                        <div class="text-sm font-medium text-gray-500">Sesión Activa</div>
+                    </div>
+                    <form action="{% url 'logout' %}" method="post" class="ml-auto">
+                        {% csrf_token %}
+                        <button type="submit" class="text-red-600 font-medium text-sm hover:underline">Salir</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- FIN NAVBAR -->
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-grow bg-gray-50">
+        <!-- Contenedor general con padding -->
+        <div class="w-full px-4 mx-auto py-6 sm:px-6 lg:px-8">
+            {% block content %}
+            <!-- Aquí se inyectará el dashboard -->
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <p class="text-center text-sm text-gray-500">
+                &copy; {% now "Y" %} <span class="font-bold text-brand">Pangea</span> Telemetría & Analytics.
+            </p>
+            <div class="mt-2 md:mt-0 flex space-x-4 text-sm text-gray-400">
+                <a href="#" class="hover:text-gray-600">Soporte</a>
+                <a href="#" class="hover:text-gray-600">Documentación</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bloque para Scripts Javascript al final -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

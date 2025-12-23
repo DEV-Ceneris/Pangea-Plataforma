@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | Pangea{% endblock %}
+
+{% block extra_css %}
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+<style>
+    .chart-header {
+        background-color: #f8fafc;
+        color: #334155;
+        padding: 8px 15px;
+        font-weight: 600;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 0.95rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .chart-body {
+        /* Altura un poco más grande para aprovechar pantalla completa */
+        height: 300px; 
+        width: 100%;
+    }
+    .chart-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        /* Transición suave al redimensionar */
+        transition: all 0.3s ease-in-out;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <!-- 1. BARRA DE HERRAMIENTAS -->
+    <div class="bg-white p-4 rounded-lg shadow-sm mb-6 border border-gray-200 sticky top-0 z-30">
+        <div class="flex flex-wrap items-center gap-4">
+            <span class="text-gray-500 font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Configuración:
+            </span>
+            
+            <!-- Checkboxes -->
+            <label class="inline-flex items-center cursor-pointer hover:bg-gray-50 px-2 py-1 rounded transition select-none">
+                <input type="checkbox" class="toggle-chart w-4 h-4 text-brand bg-gray-100 border-gray-300 rounded focus:ring-brand" id="check-temp" data-target="card-temp" checked>
+                <span class="ml-2 text-sm text-gray-700 font-medium">Temp. Agua</span>
+            </label>
+
+            <label class="inline-flex items-center cursor-pointer hover:bg-gray-50 px-2 py-1 rounded transition select-none">
+                <input type="checkbox" class="toggle-chart w-4 h-4 text-brand bg-gray-100 border-gray-300 rounded focus:ring-brand" id="check-bat" data-target="card-bat" checked>
+                <span class="ml-2 text-sm text-gray-700 font-medium">Batería</span>
+            </label>
+
+            <label class="inline-flex items-center cursor-pointer hover:bg-gray-50 px-2 py-1 rounded transition select-none">
+                <input type="checkbox" class="toggle-chart w-4 h-4 text-brand bg-gray-100 border-gray-300 rounded focus:ring-brand" id="check-ptemp" data-target="card-ptemp">
+                <span class="ml-2 text-sm text-gray-700 font-medium">Temp. Interna</span>
+            </label>
+
+            <label class="inline-flex items-center cursor-pointer hover:bg-gray-50 px-2 py-1 rounded transition select-none">
+                <input type="checkbox" class="toggle-chart w-4 h-4 text-brand bg-gray-100 border-gray-300 rounded focus:ring-brand" id="check-oxi" data-target="card-oxi" checked>
+                <span class="ml-2 text-sm text-gray-700 font-medium">Oxígeno</span>
+            </label>
+            
+            <label class="inline-flex items-center cursor-pointer hover:bg-gray-50 px-2 py-1 rounded transition select-none">
+                <input type="checkbox" class="toggle-chart w-4 h-4 text-brand bg-gray-100 border-gray-300 rounded focus:ring-brand" id="check-ph" data-target="card-ph" checked>
+                <span class="ml-2 text-sm text-gray-700 font-medium">pH</span>
+            </label>
+
+            <label class="inline-flex items-center cursor-pointer hover:bg-gray-50 px-2 py-1 rounded transition select-none">
+                <input type="checkbox" class="toggle-chart w-4 h-4 text-brand bg-gray-100 border-gray-300 rounded focus:ring-brand" id="check-cond" data-target="card-cond" checked>
+                <span class="ml-2 text-sm text-gray-700 font-medium">Conductividad</span>
+            </label>
+            
+            <label class="inline-flex items-center cursor-pointer hover:bg-gray-50 px-2 py-1 rounded transition select-none">
+                <input type="checkbox" class="toggle-chart w-4 h-4 text-brand bg-gray-100 border-gray-300 rounded focus:ring-brand" id="check-sal" data-target="card-sal">
+                <span class="ml-2 text-sm text-gray-700 font-medium">Salinidad</span>
+            </label>
+            
+             <label class="inline-flex items-center cursor-pointer hover:bg-gray-50 px-2 py-1 rounded transition select-none">
+                <input type="checkbox" class="toggle-chart w-4 h-4 text-brand bg-gray-100 border-gray-300 rounded focus:ring-brand" id="check-sol" data-target="card-sol">
+                <span class="ml-2 text-sm text-gray-700 font-medium">Sólidos</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- 2. CONTENEDOR DE GRÁFICOS (GRID DINÁMICO) -->
+    <!-- Quitamos las clases fijas de columnas. Se pondrán con JS -->
+    <div id="charts-grid" class="grid gap-6 w-full">
+        
+        <!-- Tarjeta: Temp Agua -->
+        <div id="card-temp" class="chart-card">
+            <div class="chart-header">
+                <span>Temperatura Agua (°C)</span>
+                <span class="h-3 w-3 rounded-full bg-yellow-500 shadow-sm"></span>
+            </div>
+            <div id="chart-temp" class="chart-body"></div>
+        </div>
+
+        <!-- Tarjeta: Batería -->
+        <div id="card-bat" class="chart-card">
+            <div class="chart-header">
+                <span>Voltaje Batería (V)</span>
+                <span class="h-3 w-3 rounded-full bg-green-500 shadow-sm"></span>
+            </div>
+            <div id="chart-bat" class="chart-body"></div>
+        </div>
+        
+        <!-- Tarjeta: PTemp -->
+        <div id="card-ptemp" class="chart-card">
+            <div class="chart-header">
+                <span>Temperatura Panel (°C)</span>
+                <span class="h-3 w-3 rounded-full bg-gray-500 shadow-sm"></span>
+            </div>
+            <div id="chart-ptemp" class="chart-body"></div>
+        </div>
+
+        <!-- Tarjeta: Oxígeno -->
+        <div id="card-oxi" class="chart-card">
+            <div class="chart-header">
+                <span>Oxígeno Disuelto (mg/L)</span>
+                <span class="h-3 w-3 rounded-full bg-blue-500 shadow-sm"></span>
+            </div>
+            <div id="chart-oxi" class="chart-body"></div>
+        </div>
+
+        <!-- Tarjeta: pH -->
+        <div id="card-ph" class="chart-card">
+            <div class="chart-header">
+                <span>pH</span>
+                <span class="h-3 w-3 rounded-full bg-pink-500 shadow-sm"></span>
+            </div>
+            <div id="chart-ph" class="chart-body"></div>
+        </div>
+
+        <!-- Tarjeta: Conductividad -->
+        <div id="card-cond" class="chart-card">
+            <div class="chart-header">
+                <span>Conductividad (uS/cm)</span>
+                <span class="h-3 w-3 rounded-full bg-orange-500 shadow-sm"></span>
+            </div>
+            <div id="chart-cond" class="chart-body"></div>
+        </div>
+        
+        <!-- Tarjeta: Salinidad -->
+        <div id="card-sal" class="chart-card">
+            <div class="chart-header">
+                <span>Salinidad (%)</span>
+                <span class="h-3 w-3 rounded-full bg-teal-500 shadow-sm"></span>
+            </div>
+            <div id="chart-sal" class="chart-body"></div>
+        </div>
+        
+        <!-- Tarjeta: Solidos -->
+        <div id="card-sol" class="chart-card">
+            <div class="chart-header">
+                <span>Sólidos Disueltos (mg/L)</span>
+                <span class="h-3 w-3 rounded-full bg-purple-500 shadow-sm"></span>
+            </div>
+            <div id="chart-sol" class="chart-body"></div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    Highcharts.setOptions({
+        lang: { loading: 'Cargando...', noData: "Sin datos" },
+        time: { useUTC: false }
+    });
+
+    console.log("Iniciando Dashboard Full Screen...");
+
+    fetch('/api/v1/datos/')
+        .then(response => {
+            if (!response.ok) throw new Error("Error API: " + response.statusText);
+            return response.json();
+        })
+        .then(data => {
+            // Función crear gráfico
+            function crearGrafico(id, nombre, dataset, color, tipo='line') {
+                const safeData = dataset || [];
+                Highcharts.stockChart(id, {
+                    chart: { 
+                        height: 300, // Misma altura que el CSS
+                        backgroundColor: '#ffffff'
+                    },
+                    rangeSelector: { enabled: false },
+                    navigator: { enabled: false },
+                    scrollbar: { enabled: false },
+                    credits: { enabled: false },
+                    title: { text: '' },
+                    series: [{
+                        name: nombre,
+                        data: safeData,
+                        type: tipo,
+                        color: color,
+                        tooltip: { valueDecimals: 2 },
+                        fillOpacity: 0.2
+                    }],
+                    xAxis: { 
+                        type: 'datetime',
+                        ordinal: false // Importante para que no deforme el tiempo si faltan datos
+                    }
+                });
+            }
+
+            // Renderizado
+            crearGrafico('chart-temp', 'Temp Agua', data.temperatura_agua, '#ffc107', 'area');
+            crearGrafico('chart-bat', 'Voltaje', data.bateria_voltaje, '#198754');
+            crearGrafico('chart-ptemp', 'PTemp', data.ptemp, '#6c757d');
+            crearGrafico('chart-oxi', 'Oxígeno', data.oxigeno_mg, '#0d6efd', 'area');
+            crearGrafico('chart-ph', 'pH', data.ph, '#d63384');
+            crearGrafico('chart-cond', 'Cond.', data.conductividad, '#fd7e14');
+            crearGrafico('chart-sal', 'Salinidad', data.salinidad, '#20c997');
+            crearGrafico('chart-sol', 'TDS', data.solidos, '#6610f2');
+
+            // --- LÓGICA DE GRID DINÁMICO ---
+            const checkboxes = document.querySelectorAll('.toggle-chart');
+            const gridContainer = document.getElementById('charts-grid');
+
+            function actualizarLayout() {
+                // 1. Mostrar/Ocultar tarjetas
+                let activos = 0;
+                checkboxes.forEach(chk => {
+                    const targetId = chk.getAttribute('data-target');
+                    const card = document.getElementById(targetId);
+                    if(card) {
+                        if (chk.checked) {
+                            card.classList.remove('hidden');
+                            activos++;
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    }
+                });
+
+                // 2. Cambiar columnas del Grid según cantidad de activos
+                // Limpiamos clases de columnas anteriores
+                gridContainer.className = 'grid gap-6 w-full transition-all duration-300 ';
+
+                if (activos <= 3) {
+                    // 1 a 3 gráficos: 1 columna (ancho completo)
+                    gridContainer.classList.add('grid-cols-1');
+                } else if (activos < 7) {
+                    // 4 a 8 gráficos: 2 columnas
+                    gridContainer.classList.add('grid-cols-1', 'md:grid-cols-2');
+                } else {
+                    // 9+ gráficos: 3 columnas (en pantallas grandes)
+                    gridContainer.classList.add('grid-cols-1', 'md:grid-cols-2', 'xl:grid-cols-3');
+                }
+
+                // 3. Forzar a Highcharts a redimensionarse al nuevo ancho
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('resize'));
+                }, 100);
+            }
+
+            checkboxes.forEach(chk => chk.addEventListener('change', actualizarLayout));
+            
+            // Ejecutar al inicio
+            actualizarLayout();
+
+        })
+        .catch(err => console.error(err));
+</script>
+{% endblock %}
