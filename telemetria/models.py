@@ -4,22 +4,41 @@ from django.conf import settings
 import os
 
 # ==========================================
+# 0. EMPRESA (La entidad padre)
+# ==========================================
+class Empresa(models.Model):
+    nombre = models.CharField(max_length=100, unique=True)
+    ruc_nit = models.CharField(max_length=20, blank=True, help_text="Identificador Tributario")
+    direccion = models.CharField(max_length=200, blank=True)
+    logo = models.ImageField(upload_to='logos_empresas/', blank=True, null=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    activa = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.nombre
+
+# ==========================================
 # 1. PERFIL DE USUARIO (Roles y Datos Extra)
 # ==========================================
 class PerfilUsuario(models.Model):
     ROLES = [
-        ('admin', 'Administrador Global'),
-        ('supervisor', 'Supervisor de Proyecto'),
-        ('operador', 'Operador de Campo'),
-        ('cliente', 'Cliente (Solo lectura)'),
+        ('admin_empresa', 'Administrador de Empresa'), # Puede crear usuarios y proyectos
+        ('supervisor', 'Supervisor'),
+        ('operador', 'Operador'),
+        ('visualizador', 'Solo Lectura'),
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
+    
+    # VINCULACIÓN CRÍTICA: El usuario pertenece a una empresa
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='usuarios', null=True, blank=True)
+    
     rol = models.CharField(max_length=20, choices=ROLES, default='operador')
-    telefono = models.CharField(max_length=20, blank=True, help_text="Para alertas SMS/WhatsApp")
+    telefono = models.CharField(max_length=20, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True) # Agregado para el diseño visual
 
     def __str__(self):
-        return f"{self.user.username} - {self.get_rol_display()}"
-
+        empresa_nombre = self.empresa.nombre if self.empresa else "Sin Empresa"
+        return f"{self.user.username} ({empresa_nombre})"
 
 # ==========================================
 # 2. PROYECTO (Agrupador de Estaciones)
