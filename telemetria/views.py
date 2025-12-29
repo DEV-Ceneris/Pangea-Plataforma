@@ -143,7 +143,7 @@ def lista_estaciones(request):
         # Filtramos estaciones que pertenezcan a los proyectos del usuario
         estaciones = Estacion.objects.filter(proyecto__in=usuario.proyectos.all())
     
-    return render(request, 'estaciones/lista.html', {'estaciones': estaciones})
+    return render(request, 'estacion/lista_estacion.html', {'estaciones': estaciones})
 
 @login_required
 def crear_estacion(request):
@@ -156,4 +156,4 @@ def crear_estacion(request):
     else:
         form = EstacionForm(request.user)
     
-    return render(request, 'estaciones/crear.html', {'form': form})
+    return render(request, 'estacion/crear_estacion.html', {'form': form})

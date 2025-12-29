@@ -57,6 +57,27 @@ class Estacion(models.Model):
         verbose_name = "Estación"
         verbose_name_plural = "Estaciones"
 
+    def save(self, *args, **kwargs):
+        # 1. Guardamos la información en la base de datos primero
+        super().save(*args, **kwargs)
+
+        # 2. Definimos la ruta de la carpeta
+        # Usamos el codigo_identificador para el nombre de la carpeta (Ej: 21738)
+        nombre_carpeta = str(self.codigo_identificador).strip()
+        ruta_carpeta = os.path.join(settings.RUTA_DATOS_TELEMETRIA, nombre_carpeta)
+
+        # 3. Verificamos si existe, si no, la creamos
+        if not os.path.exists(ruta_carpeta):
+            try:
+                # os.makedirs crea la carpeta y subcarpetas si faltan
+                # mode=0o755 da permisos de lectura/ejecución a otros usuarios (importante para FTP)
+                os.makedirs(ruta_carpeta, mode=0o755)
+                print(f"✅ Carpeta creada exitosamente: {ruta_carpeta}")
+            except OSError as e:
+                print(f"❌ Error al crear carpeta para estación {self.codigo_identificador}: {e}")
+        else:
+            print(f"ℹ️ La carpeta ya existía: {ruta_carpeta}")
+
     def __str__(self):
         return f"{self.nombre} ({self.codigo_identificador})"
 
