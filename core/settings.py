@@ -135,4 +135,11 @@ LOGOUT_REDIRECT_URL = '/login/'
 
 # Ruta de carpeta linux
 
-RUTA_DATOS_TELEMETRIA = os.path.join(BASE_DIR, 'telemetria_data')
+if os.name == 'nt':  
+    # EN TU PC (WINDOWS):
+    # Guarda dentro del proyecto para que no te de errores al programar
+    RUTA_DATOS_TELEMETRIA = os.path.join(BASE_DIR, 'telemetria_data')
+else:
+    # EN EL SERVIDOR (LINUX):
+    # Guarda en la carpeta profesional separada que configuramos
+    RUTA_DATOS_TELEMETRIA = '/var/www/telemetria_data'
