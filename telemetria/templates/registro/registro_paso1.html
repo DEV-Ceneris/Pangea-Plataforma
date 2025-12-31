@@ -1,0 +1,78 @@
+{% extends 'registro/base_auth.html' %}
+
+{% block title %}Paso 1: Datos - Pangea{% endblock %}
+
+{% block auth_content %}
+<div class="mb-6 text-center lg:text-left">
+    <h2 class="text-3xl font-bold text-gray-900 mb-2">Crear Cuenta</h2>
+    <p class="text-gray-500 text-sm">Paso 1 de 3: Datos de la Empresa</p>
+</div>
+
+<form method="POST" class="space-y-4">
+    {% csrf_token %}
+    
+    <!-- Errores -->
+    {% if form.non_field_errors %}
+    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50">
+        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Nombre Empresa -->
+    <div>
+        <label class="block mb-2 text-sm font-medium text-gray-900">Empresa / Proyecto</label>
+        {{ form.nombre_empresa }}
+    </div>
+
+    <!-- Nombres y Apellidos -->
+    <div class="grid grid-cols-2 gap-4">
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-900">Nombres</label>
+            {{ form.first_name }}
+        </div>
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-900">Apellidos</label>
+            {{ form.last_name }}
+        </div>
+    </div>
+
+    <!-- Email -->
+    <div>
+        <label class="block mb-2 text-sm font-medium text-gray-900">Correo Electrónico</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ form.email.errors.0 }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Checks de Privacidad -->
+    <div class="space-y-3 pt-2">
+        <div class="flex items-start">
+            <div class="flex items-center h-5">
+                {{ form.terminos }}
+            </div>
+            <div class="ml-3 text-sm">
+                <label for="{{ form.terminos.id_for_label }}" class="font-medium text-gray-700">Acepto los <a href="#" class="text-brand hover:underline">Términos y Condiciones</a></label>
+                {% if form.terminos.errors %}<p class="text-red-500 text-xs">{{ form.terminos.errors.0 }}</p>{% endif %}
+            </div>
+        </div>
+        <div class="flex items-start">
+            <div class="flex items-center h-5">
+                {{ form.privacidad }}
+            </div>
+            <div class="ml-3 text-sm">
+                <label for="{{ form.privacidad.id_for_label }}" class="font-medium text-gray-700">Acepto la <a href="#" class="text-brand hover:underline">Política de Privacidad</a></label>
+                {% if form.privacidad.errors %}<p class="text-red-500 text-xs">{{ form.privacidad.errors.0 }}</p>{% endif %}
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="w-full text-white bg-brand hover:bg-brand-dark font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-md mt-6">
+        Enviar Código de Verificación
+    </button>
+    
+    <div class="mt-6 text-center">
+        <a href="{% url 'login' %}" class="text-sm font-medium text-brand hover:underline">Volver al Login</a>
+    </div>
+</form>
+{% endblock %}

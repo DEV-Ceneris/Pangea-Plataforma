@@ -65,10 +65,16 @@
 
                     <!-- Input Email -->
                     <div>
-                        <label for="id_username" class="block mb-2 text-sm font-medium text-gray-900">Usuario</label>
-                        <input type="text" name="username" id="id_username" 
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-2.5 placeholder-gray-400" 
-                            placeholder="usuario@1235" required>
+                        <label for="id_username" class="block mb-2 text-sm font-medium text-gray-900">Correo Electrónico</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <!-- Icono de arroba opcional para que se vea más pro -->
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" /></svg>
+                            </div>
+                            <input type="email" name="username" id="id_username" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand focus:border-brand block w-full pl-10 p-2.5 placeholder-gray-400" 
+                                placeholder="nombre@empresa.com" required>
+                        </div>
                     </div>
 
                     <!-- Input Password -->
@@ -98,6 +104,14 @@
                     <button type="submit" class="w-full text-white bg-brand hover:bg-brand-dark focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-md transition-colors">
                         Ingresar
                     </button>
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-500">
+                            ¿Aún no tienes cuenta? 
+                            <a href="{% url 'planes_precios' %}" class="font-medium text-brand hover:underline transition-colors">
+                                Ver Planes y Precios
+                            </a>
+                        </p>
+                    </div>
                 </form>
             </div>
         </div>

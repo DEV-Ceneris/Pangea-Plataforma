@@ -2,17 +2,27 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 import os
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # ==========================================
 # 0. EMPRESA (La entidad padre)
 # ==========================================
 class Empresa(models.Model):
+    PLANES = [
+        ('gratuito', 'Plan Gratuito (Demo)'),
+        ('basico', 'Básico'),
+        ('estandar', 'Estándar'),
+        ('pro', 'Profesional'),
+        ('enterprise', 'Corporativo'),
+    ]
     nombre = models.CharField(max_length=100, unique=True)
     ruc_nit = models.CharField(max_length=20, blank=True, help_text="Identificador Tributario")
     direccion = models.CharField(max_length=200, blank=True)
     logo = models.ImageField(upload_to='logos_empresas/', blank=True, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     activa = models.BooleanField(default=True)
+    plan = models.CharField(max_length=20, choices=PLANES, default='gratuito')
 
     def __str__(self):
         return self.nombre
@@ -45,6 +55,7 @@ class PerfilUsuario(models.Model):
 # ==========================================
 class Proyecto(models.Model):
     nombre = models.CharField(max_length=100)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='proyectos', null=True)
     descripcion = models.TextField(blank=True)
     fecha_inicio = models.DateField()
     activo = models.BooleanField(default=True)
@@ -174,3 +185,15 @@ class Notificacion(models.Model):
 
     def __str__(self):
         return f"[{self.tipo.upper()}] {self.estacion.nombre}: {self.mensaje}"
+
+@receiver(post_save, sender=User)
+def crear_perfil_usuario(sender, instance, created, **kwargs):
+    if created:
+        # Se acaba de crear un usuario, creamos su perfil
+        # Nota: Se crea sin empresa, luego habrá que asignarla
+        PerfilUsuario.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def guardar_perfil_usuario(sender, instance, **kwargs):
+    # Por seguridad, cada vez que se guarda el usuario, guardamos su perfil
+    instance.perfil.save()

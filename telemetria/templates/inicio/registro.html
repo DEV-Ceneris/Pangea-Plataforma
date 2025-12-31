@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta - Plataforma Telemetría</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#0d6efd',
+                            dark: '#0a58ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Ocultar ojitos por defecto de los navegadores */
+        input::-ms-reveal,
+        input::-ms-clear { display: none; }
+        input::-webkit-password-drawer-button, 
+        input::-webkit-password-drawer-button-active, 
+        input::-webkit-password-drawer-button-hover { display: none; }
+    </style>
+</head>
+<body class="bg-white">
+
+    <div class="flex min-h-screen">
+        
+        <!-- SECCIÓN IZQUIERDA: FORMULARIO -->
+        <div class="w-full lg:w-1/2 flex flex-col justify-center items-center px-8 bg-white py-10 relative overflow-y-auto">
+            
+            <!-- Logo -->
+            <div class="absolute top-8 left-8">
+                <a href="{% url 'login' %}" class="inline-block">
+                    <img src="{% static 'img/logo.png' %}" alt="Logo Telemetría" class="h-16 w-auto">
+                </a>
+            </div>
+
+            <!-- CONTENEDOR CENTRADO -->
+            <div class="w-full max-w-md mt-12">
+                
+                <!-- Encabezado -->
+                <div class="mb-6 text-center lg:text-left">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Comienza Gratis</h2>
+                    <p class="text-gray-500 text-sm">Crea una cuenta para gestionar tus proyectos de telemetría.</p>
+                </div>
+
+                <!-- FORMULARIO -->
+                <form method="POST" class="space-y-4">
+                    {% csrf_token %}
+                    
+                    <!-- Campo Oculto del Plan -->
+                    {{ form.plan_seleccionado }}
+
+                    <!-- Aviso del Plan Elegido -->
+                    <div class="p-3 mb-2 text-sm text-blue-800 rounded-lg bg-blue-50 border border-blue-200 font-medium">
+                        Estás registrándote en el <strong>Plan {{ plan_elegido|default:"Gratuito"|title }}</strong>
+                    </div>
+
+                    <!-- Errores Generales -->
+                    {% if form.non_field_errors %}
+                    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- 1. Nombre de la Empresa -->
+                    <div>
+                        <label for="id_nombre_empresa" class="block mb-2 text-sm font-medium text-gray-900">Nombre de tu Empresa / Proyecto</label>
+                        <input type="text" name="nombre_empresa" id="id_nombre_empresa" 
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-2.5 placeholder-gray-400" 
+                            placeholder="Ej: Sociedad Minera Cerro Verde" 
+                            value="{{ form.nombre_empresa.value|default:'' }}" required>
+                        {% if form.nombre_empresa.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.nombre_empresa.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Grid: Usuario y Nombre -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- 2. Usuario -->
+                        <div>
+                            <label for="id_username" class="block mb-2 text-sm font-medium text-gray-900">Usuario</label>
+                            <input type="text" name="username" id="id_username" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-2.5 placeholder-gray-400" 
+                                placeholder="user01" 
+                                value="{{ form.username.value|default:'' }}" required>
+                             {% if form.username.errors %}
+                                <p class="text-red-500 text-xs mt-1">{{ form.username.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        <!-- 3. Nombre Persona -->
+                        <div>
+                            <label for="id_first_name" class="block mb-2 text-sm font-medium text-gray-900">Nombre</label>
+                            <input type="text" name="first_name" id="id_first_name" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-2.5 placeholder-gray-400" 
+                                placeholder="Tu nombre" 
+                                value="{{ form.first_name.value|default:'' }}" required>
+                        </div>
+                    </div>
+
+                    <!-- 4. Email -->
+                    <div>
+                        <label for="id_email" class="block mb-2 text-sm font-medium text-gray-900">Correo Electrónico</label>
+                        <input type="email" name="email" id="id_email" 
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-2.5 placeholder-gray-400" 
+                            placeholder="nombre@empresa.com" 
+                            value="{{ form.email.value|default:'' }}" required>
+                        {% if form.email.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.email.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- 5. Contraseña 1 -->
+                    <div>
+                        <label for="id_password1" class="block mb-2 text-sm font-medium text-gray-900">Contraseña</label>
+                        <div class="relative">
+                            <input type="password" name="password1" id="id_password1" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-2.5 pr-10 placeholder-gray-400" 
+                                placeholder="•••••••••••" required>
+                            
+                            <button type="button" onclick="togglePassword('id_password1')" 
+                                class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-brand cursor-pointer z-10 focus:outline-none">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Usa al menos 8 caracteres.</p>
+                        {% if form.password1.errors %}
+                            <div class="text-red-500 text-xs mt-1">
+                                {% for error in form.password1.errors %}<span>{{ error }}</span><br>{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- 6. Contraseña 2 -->
+                    <div class="mt-4">
+                        <label for="id_password2" class="block mb-2 text-sm font-medium text-gray-900">Confirmar Contraseña</label>
+                        <div class="relative">
+                            <input type="password" name="password2" id="id_password2" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-2.5 pr-10 placeholder-gray-400" 
+                                placeholder="•••••••••••" required>
+                            
+                            <button type="button" onclick="togglePassword('id_password2')" 
+                                class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-brand cursor-pointer z-10 focus:outline-none">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
+                        </div>
+                        {% if form.password2.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.password2.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- 7. BOTÓN DE CREAR CUENTA (¡ESTE ERA EL QUE FALTABA!) -->
+                    <button type="submit" class="w-full text-white bg-brand hover:bg-brand-dark focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-md transition-colors mt-8">
+                        Crear Cuenta
+                    </button>
+                    
+                    <!-- Enlace Login -->
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-500">
+                            ¿Ya tienes cuenta? 
+                            <a href="{% url 'login' %}" class="font-medium text-brand hover:underline transition-colors">
+                                Iniciar Sesión
+                            </a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DERECHA: CARRUSEL -->
+        <div class="hidden lg:flex lg:w-1/2 bg-brand items-center justify-center relative overflow-hidden">
+            <!-- Fondos -->
+            <div class="absolute w-[600px] h-[600px] bg-white/10 rounded-full blur-3xl -top-20 -right-20 z-0"></div>
+            <div class="absolute w-[400px] h-[400px] bg-blue-500/30 rounded-full blur-2xl bottom-10 left-10 z-0"></div>
+
+            <!-- CONTENEDOR DE SLIDES -->
+            <div id="carousel-slides" class="relative z-10 w-full max-w-lg text-center px-10 h-[500px] flex items-center justify-center">
+                <!-- Slide 1 -->
+                <div class="carousel-item absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100 flex flex-col items-center justify-center" data-index="0">
+                    <div class="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/20 shadow-2xl mb-8 transform hover:scale-105 transition duration-500">
+                        <div class="w-64 h-48 bg-white/20 rounded-lg flex items-center justify-center text-white">
+                            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white mb-4">Gestión Multi-Tenant</h2>
+                    <p class="text-blue-100 text-lg">Crea tu propia organización y administra usuarios, permisos y proyectos de forma centralizada.</p>
+                </div>
+                <!-- Slide 2 -->
+                <div class="carousel-item absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0 flex flex-col items-center justify-center" data-index="1">
+                    <div class="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/20 shadow-2xl mb-8">
+                         <div class="w-64 h-48 bg-white/20 rounded-lg flex items-center justify-center text-white">
+                            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white mb-4">Escalabilidad Total</h2>
+                    <p class="text-blue-100 text-lg">Comienza con un plan básico y crece sin límites.</p>
+                </div>
+                <!-- Slide 3 -->
+                <div class="carousel-item absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0 flex flex-col items-center justify-center" data-index="2">
+                    <div class="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/20 shadow-2xl mb-8">
+                        <div class="w-64 h-48 bg-white/20 rounded-lg flex items-center justify-center text-white">
+                           <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white mb-4">Seguridad Garantizada</h2>
+                    <p class="text-blue-100 text-lg">Tus datos aislados y protegidos con los más altos estándares.</p>
+                </div>
+            </div>
+
+            <!-- INDICADORES -->
+            <div class="absolute bottom-10 flex gap-3 z-20">
+                <button class="carousel-dot w-3 h-3 rounded-full bg-white transition-all duration-300" onclick="goToSlide(0)"></button>
+                <button class="carousel-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/70 transition-all duration-300" onclick="goToSlide(1)"></button>
+                <button class="carousel-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/70 transition-all duration-300" onclick="goToSlide(2)"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function togglePassword(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            if (passwordInput) {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+            }
+        }
+
+        const slides = document.querySelectorAll('.carousel-item');
+        const dots = document.querySelectorAll('.carousel-dot');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+        const intervalTime = 3000;
+
+        function showSlide(index) {
+            slides.forEach((slide) => {
+                slide.classList.remove('opacity-100', 'z-10');
+                slide.classList.add('opacity-0', 'z-0');
+            });
+            dots.forEach((dot) => {
+                dot.classList.remove('bg-white', 'scale-110');
+                dot.classList.add('bg-white/40');
+            });
+            slides[index].classList.remove('opacity-0', 'z-0');
+            slides[index].classList.add('opacity-100', 'z-10');
+            dots[index].classList.remove('bg-white/40');
+            dots[index].classList.add('bg-white', 'scale-110');
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            let nextIndex = (currentSlide + 1) % totalSlides;
+            showSlide(nextIndex);
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, intervalTime);
+        }
+
+        let slideInterval = setInterval(nextSlide, intervalTime);
+        showSlide(0);
+    </script>
+</body>
+</html>

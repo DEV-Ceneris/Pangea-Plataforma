@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Pangea Telemetría{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { DEFAULT: '#0d6efd', dark: '#0a58ca' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        input::-ms-reveal, input::-ms-clear { display: none; }
+        input::-webkit-password-drawer-button { display: none; }
+    </style>
+</head>
+<body class="bg-white">
+
+    <div class="flex min-h-screen">
+        
+        <!-- ============================================== -->
+        <!-- LADO IZQUIERDO: FORMULARIO (Variable)          -->
+        <!-- ============================================== -->
+        <div class="w-full lg:w-1/2 flex flex-col justify-center items-center px-8 bg-white py-10 relative overflow-y-auto">
+            
+            <!-- Logo -->
+            <div class="absolute top-8 left-8">
+                <a href="{% url 'login' %}" class="inline-block">
+                    <img src="{% static 'img/logo.png' %}" alt="Logo" class="h-16 w-auto">
+                </a>
+            </div>
+
+            <!-- CONTENEDOR DEL FORMULARIO -->
+            <div class="w-full max-w-md mt-12">
+                {% block auth_content %}
+                <!-- AQUÍ SE INYECTARÁN LOS FORMULARIOS ESPECÍFICOS -->
+                {% endblock %}
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- LADO DERECHO: CARRUSEL (Fijo)                  -->
+        <!-- ============================================== -->
+        <div class="hidden lg:flex lg:w-1/2 bg-brand items-center justify-center relative overflow-hidden">
+            <div class="absolute w-[600px] h-[600px] bg-white/10 rounded-full blur-3xl -top-20 -right-20 z-0"></div>
+            <div class="absolute w-[400px] h-[400px] bg-blue-500/30 rounded-full blur-2xl bottom-10 left-10 z-0"></div>
+
+            <!-- SLIDES -->
+            <div id="carousel-slides" class="relative z-10 w-full max-w-lg text-center px-10 h-[500px] flex items-center justify-center">
+                <!-- Slide 1 -->
+                <div class="carousel-item absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100 flex flex-col items-center justify-center" data-index="0">
+                    <div class="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/20 shadow-2xl mb-8 transform hover:scale-105 transition duration-500">
+                        <div class="w-64 h-48 bg-white/20 rounded-lg flex items-center justify-center text-white">
+                            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white mb-4">Registro en 3 Pasos</h2>
+                    <p class="text-blue-100 text-lg">Un proceso de alta seguridad para validar tu identidad y la de tu empresa.</p>
+                </div>
+                <!-- Puedes agregar más slides aquí si quieres -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts Globales -->
+    <script>
+        function togglePassword(fieldId) {
+            const input = document.getElementById(fieldId);
+            if(input) {
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+            }
+        }
+    </script>
+</body>
+</html>

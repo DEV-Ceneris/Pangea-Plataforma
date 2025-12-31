@@ -143,3 +143,9 @@ else:
     # EN EL SERVIDOR (LINUX):
     # Guarda en la carpeta profesional separada que configuramos
     RUTA_DATOS_TELEMETRIA = '/var/www/telemetria_data'
+
+# ==========================================
+#  CONFIGURACION ENVIO DE EMAILS
+# ==========================================
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

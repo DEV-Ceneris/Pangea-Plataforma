@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planes y Precios - Pangea</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { colors: { brand: { DEFAULT: '#0d6efd', dark: '#0a58ca' } } }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- NAVBAR SIMPLE -->
+    <nav class="bg-white border-b border-gray-200 py-4">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <a href="{% url 'login' %}" class="flex items-center gap-2 font-bold text-xl text-brand">
+                <img src="{% static 'img/logo.png' %}" alt="Logo" class="h-8">
+            </a>
+            <a href="{% url 'login' %}" class="text-sm font-medium text-gray-500 hover:text-gray-900">Volver al Login</a>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <div class="text-center pt-16 pb-12 px-4">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Elige el plan perfecto para tu monitoreo</h1>
+        <p class="text-lg text-gray-500 max-w-2xl mx-auto">Desde proyectos piloto hasta redes de monitoreo nacionales. Escala tus capacidades según lo necesites.</p>
+    </div>
+
+    <!-- CONTENEDOR DE TARJETAS (Grid de 5 columnas en pantallas grandes) -->
+    <div class="max-w-[1600px] mx-auto px-4 pb-24">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+
+            <!-- 1. PLAN GRATUITO -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col hover:shadow-lg transition-shadow">
+                <div class="mb-4">
+                    <span class="inline-block py-1 px-3 rounded-full bg-gray-100 text-xs font-semibold text-gray-600 uppercase tracking-wide">Demo</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900">Gratuito</h2>
+                <div class="my-4 flex items-baseline">
+                    <span class="text-4xl font-extrabold text-gray-900">$0</span>
+                    <span class="text-gray-500 ml-1">/mes</span>
+                </div>
+                <p class="text-sm text-gray-500 mb-6">Ideal para pruebas de concepto y estudiantes.</p>
+                <ul class="space-y-3 mb-8 flex-1">
+                    <li class="flex text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 1 Proyecto</li>
+                    <li class="flex text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 1 Estación</li>
+                    <li class="flex text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Retención 30 días</li>
+                </ul>
+                <a href="{% url 'registro' %}?plan=gratuito" class="block w-full py-3 px-4 bg-gray-50 hover:bg-gray-100 text-brand font-bold text-center rounded-lg border border-brand transition-colors">
+                    Empezar Gratis
+                </a>
+            </div>
+
+            <!-- 2. PLAN BÁSICO -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col hover:shadow-lg transition-shadow">
+                <div class="mb-4">
+                    <span class="inline-block py-1 px-3 rounded-full bg-blue-50 text-xs font-semibold text-brand uppercase tracking-wide">Starter</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900">Básico</h2>
+                <div class="my-4 flex items-baseline">
+                    <span class="text-4xl font-extrabold text-gray-900">$29</span>
+                    <span class="text-gray-500 ml-1">/mes</span>
+                </div>
+                <p class="text-sm text-gray-500 mb-6">Para pequeños consultores y monitoreo simple.</p>
+                <ul class="space-y-3 mb-8 flex-1">
+                    <li class="flex text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 3 Proyectos</li>
+                    <li class="flex text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 5 Estaciones</li>
+                    <li class="flex text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Alertas por Email</li>
+                </ul>
+                <a href="{% url 'registro' %}?plan=basico" class="block w-full py-3 px-4 bg-brand text-white font-bold text-center rounded-lg hover:bg-brand-dark transition-colors">
+                    Seleccionar Básico
+                </a>
+            </div>
+
+            <!-- 3. PLAN ESTÁNDAR (RECOMENDADO) -->
+            <div class="bg-white rounded-2xl shadow-xl border-2 border-brand p-6 flex flex-col relative transform scale-105 z-10">
+                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <span class="bg-brand text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-md">Más Popular</span>
+                </div>
+                <div class="mb-4 mt-2">
+                    <span class="inline-block py-1 px-3 rounded-full bg-blue-100 text-xs font-semibold text-brand-dark uppercase tracking-wide">Growth</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900">Estándar</h2>
+                <div class="my-4 flex items-baseline">
+                    <span class="text-4xl font-extrabold text-gray-900">$79</span>
+                    <span class="text-gray-500 ml-1">/mes</span>
+                </div>
+                <p class="text-sm text-gray-500 mb-6">Para empresas en crecimiento con múltiples sitios.</p>
+                <ul class="space-y-3 mb-8 flex-1">
+                    <li class="flex text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 10 Proyectos</li>
+                    <li class="flex text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 20 Estaciones</li>
+                    <li class="flex text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Exportación API</li>
+                </ul>
+                <a href="{% url 'registro' %}?plan=estandar" class="block w-full py-3 px-4 bg-brand text-white font-bold text-center rounded-lg hover:bg-brand-dark transition-colors shadow-lg">
+                    Seleccionar Estándar
+                </a>
+            </div>
+
+            <!-- 4. PLAN PROFESIONAL -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col hover:shadow-lg transition-shadow">
+                <div class="mb-4">
+                    <span class="inline-block py-1 px-3 rounded-full bg-purple-50 text-xs font-semibold text-purple-600 uppercase tracking-wide">Pro</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900">Profesional</h2>
+                <div class="my-4 flex items-baseline">
+                    <span class="text-4xl font-extrabold text-gray-900">$149</span>
+                    <span class="text-gray-500 ml-1">/mes</span>
+                </div>
+                <p class="text-sm text-gray-500 mb-6">Analítica avanzada y soporte prioritario.</p>
+                <ul class="space-y-3 mb-8 flex-1">
+                    <li class="flex text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Proyectos Ilimitados</li>
+                    <li class="flex text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 50 Estaciones</li>
+                    <li class="flex text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Soporte 24/7</li>
+                </ul>
+                <a href="{% url 'registro' %}?plan=pro" class="block w-full py-3 px-4 bg-gray-50 hover:bg-gray-100 text-brand font-bold text-center rounded-lg border border-brand transition-colors">
+                    Seleccionar Pro
+                </a>
+            </div>
+
+            <!-- 5. PLAN CORPORATIVO -->
+            <div class="bg-gray-900 rounded-2xl shadow-sm border border-gray-800 p-6 flex flex-col hover:shadow-lg transition-shadow">
+                <div class="mb-4">
+                    <span class="inline-block py-1 px-3 rounded-full bg-gray-700 text-xs font-semibold text-white uppercase tracking-wide">Enterprise</span>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Corporativo</h2>
+                <div class="my-4 flex items-baseline">
+                    <span class="text-2xl font-extrabold text-white">A medida</span>
+                </div>
+                <p class="text-sm text-gray-400 mb-6">Infraestructura dedicada y SLAs personalizados.</p>
+                <ul class="space-y-3 mb-8 flex-1">
+                    <li class="flex text-sm text-gray-300"><svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Estaciones Ilimitadas</li>
+                    <li class="flex text-sm text-gray-300"><svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Servidor Dedicado</li>
+                    <li class="flex text-sm text-gray-300"><svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Integración SAP/ERP</li>
+                </ul>
+                <a href="{% url 'registro' %}?plan=enterprise" class="block w-full py-3 px-4 bg-white text-gray-900 font-bold text-center rounded-lg hover:bg-gray-100 transition-colors">
+                    Contactar Ventas
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
